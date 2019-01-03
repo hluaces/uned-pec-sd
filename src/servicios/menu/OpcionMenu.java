@@ -1,7 +1,12 @@
 package servicios.menu;
 
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
+
+import servicios.menu.exception.ParametroCallbackNoValido;
 
 /**
  * Clase que representa una opción de un menú.
@@ -52,6 +57,8 @@ final class OpcionMenu implements OpcionMenuInterface {
 	 */
 	protected Scanner scanner;
 
+	protected Map<String, ParametroOpcionInterface> parametros;
+
 	/**
 	 * Crea una nueva opción de menú
 	 * 
@@ -63,6 +70,26 @@ final class OpcionMenu implements OpcionMenuInterface {
 
 		this.out = out;
 		this.scanner = s;
+		this.parametros = new HashMap<>();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ParametroOpcionInterface addParametro(String nombre, String mensaje, ParametroOpcionValidadorInterface p) {
+		ParametroOpcion param = new ParametroOpcion(nombre, mensaje, p);
+
+		this.parametros.put(nombre, param);
+		return param;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ParametroOpcionInterface getParametro(String nombre) {
+		return this.parametros.get(nombre);
 	}
 
 	/**
@@ -83,7 +110,20 @@ final class OpcionMenu implements OpcionMenuInterface {
 			return false;
 		}
 
-		return callback.ejecutar(this.out);
+		for (Entry<String, ParametroOpcionInterface> p : this.parametros.entrySet()) {
+			this.out.print(p.getValue().getMensaje());
+
+			String data = this.scanner.nextLine();
+
+			try {
+				p.getValue().setDato(data);
+			} catch (ParametroCallbackNoValido e) {
+				this.out.println(e.getMessage());
+				return true;
+			}
+		}
+
+		return callback.ejecutar(this.parametros, this.out);
 	}
 
 	/**

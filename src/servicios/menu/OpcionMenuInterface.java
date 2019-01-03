@@ -68,6 +68,24 @@ public interface OpcionMenuInterface {
 	public OpcionMenuInterface setFinal(boolean b);
 
 	/**
+	 * Adder "fluent" que añade un parámetro a la opción y devuelve la misma opción.
+	 * 
+	 * @param mensaje Mensaje que se mostrará para pedir el parámetro
+	 * @param p       Validador del parámetro a añadir
+	 * 
+	 * @return Parámetro recién añadido
+	 */
+	public ParametroOpcionInterface addParametro(String name, String mensaje, ParametroOpcionValidadorInterface p);
+
+	/**
+	 * Getter que devuelve un parámetro cuyo nombre pasamos como parámetro, o null.
+	 * 
+	 * @param name Nombre del parámetro
+	 * @return Parámetro o null
+	 */
+	public ParametroOpcionInterface getParametro(String name);
+
+	/**
 	 * Determina si la opción es final o no.
 	 * 
 	 * Un servicio de menú debe abortar su bucle principal tras ejecutar una opción

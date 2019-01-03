@@ -1,5 +1,6 @@
 package controladores;
 
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -8,6 +9,12 @@ import common.DatosUsuarioInterface;
 import common.TrinoInterface;
 import servicios.ServicioDatosInterface;
 import servicios.ServiciosFactory;
+import servicios.exception.ServicioYaIniciadoException;
+import servicios.menu.CallbackOpcionInterface;
+import servicios.menu.ParametroOpcionInterface;
+import servicios.menu.ParametroOpcionValidadorInterface;
+import servicios.menu.ServicioMenu;
+import servicios.menu.exception.ParametroCallbackNoValido;
 
 /**
  * Esta entidad es la encargada de almacenar todos los datos del sistema:
@@ -21,10 +28,68 @@ import servicios.ServiciosFactory;
 final public class Basededatos extends AbstractControlador implements BasededatosInterface {
 	private static String SERVICIO_DATOS = "datos";
 
-	public Basededatos() {
-		super();
+	public Basededatos(PrintStream out) {
+		super(out);
 
 		this.addServicio(Basededatos.SERVICIO_DATOS, ServiciosFactory.crearDatos());
+		this.crearMenu();
+	}
+
+	protected void crearMenu() {
+		ServicioMenu menu = new ServicioMenu(this.out);
+
+		try {
+			menu.addOpcion("Información de la Base de Datos.", new CallbackOpcionInterface() {
+				@Override
+				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+					out.println("Información...");
+					return true;
+				}
+			});
+			menu.addOpcion("Listar usuarios registrados.", new CallbackOpcionInterface() {
+
+				@Override
+				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+					out.println("Listado usuarios...");
+					return true;
+				}
+			});
+			menu.addOpcion("Listar trinos.", new CallbackOpcionInterface() {
+
+				@Override
+				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+					out.println("Listado trinos...");
+					return true;
+				}
+			}).addParametro("Trino", "¿Qué trinos tronco?", new ParametroOpcionValidadorInterface() {
+
+				@Override
+				public boolean validar(Object dato) throws ParametroCallbackNoValido {
+					if (!dato.equals("todos")) {
+						throw new ParametroCallbackNoValido("El valor ha de ser 'todos'");
+					}
+					return true;
+				}
+
+				@Override
+				public String getMensajeError() {
+					return "Solo nos vale 'todos'";
+				}
+			});
+			menu.addOpcion("Salir.", new CallbackOpcionInterface() {
+
+				@Override
+				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+					out.println("Saliendo del sistema de base de datos.");
+					return true;
+				}
+			}).setFinal(true);
+
+			this.addMenu(menu);
+		} catch (ServicioYaIniciadoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

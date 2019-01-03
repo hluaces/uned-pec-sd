@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import servicios.AbstractServicio;
@@ -22,7 +23,7 @@ import servicios.exception.ServicioYaIniciadoException;
  * 
  * @author Héctor Luaces Novo <hector@luaces-novo.es>
  */
-class ServicioMenu extends AbstractServicio implements ServicioMenuInterface {
+public class ServicioMenu extends AbstractServicio implements ServicioMenuInterface {
 	/**
 	 * La clase que se usará para recibir eventos de teclado
 	 */
@@ -42,6 +43,7 @@ class ServicioMenu extends AbstractServicio implements ServicioMenuInterface {
 		super();
 		this.out = out;
 		this.opciones = new ArrayList<>();
+		this.scanner = new Scanner(System.in);
 	}
 
 	/**
@@ -49,7 +51,6 @@ class ServicioMenu extends AbstractServicio implements ServicioMenuInterface {
 	 */
 	@Override
 	protected boolean _iniciar() {
-		this.scanner = new Scanner(System.in);
 		return true;
 	}
 
@@ -69,6 +70,9 @@ class ServicioMenu extends AbstractServicio implements ServicioMenuInterface {
 			try {
 				activada = false;
 				int opcion = this.scanner.nextInt();
+
+				// Para eliminar el '\n\r' restante
+				this.scanner.nextLine();
 
 				// Escaneamos una opción y buscamos entre las asociadas al menú
 				// cual corresponde con ese número
@@ -95,7 +99,9 @@ class ServicioMenu extends AbstractServicio implements ServicioMenuInterface {
 			} catch (InputMismatchException e) {
 				this.mostrarMensajeFallo();
 			} finally {
-				this.mostrarOpciones();
+				if (!parar) {
+					this.mostrarOpciones();
+				}
 			}
 		}
 
@@ -154,7 +160,7 @@ class ServicioMenu extends AbstractServicio implements ServicioMenuInterface {
 		try {
 			s.addOpcion("Imprime 'hola mundo'", new CallbackOpcionInterface() {
 				@Override
-				public boolean ejecutar(PrintStream out) {
+				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
 					out.println("HOLA MUNDO");
 					return true;
 				}
@@ -162,7 +168,7 @@ class ServicioMenu extends AbstractServicio implements ServicioMenuInterface {
 			s.addOpcion("Imprime 'asd'", new CallbackOpcionInterface() {
 
 				@Override
-				public boolean ejecutar(PrintStream out) {
+				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
 					out.println("asd");
 					return true;
 				}
@@ -170,7 +176,7 @@ class ServicioMenu extends AbstractServicio implements ServicioMenuInterface {
 			s.addOpcion("Salir", new CallbackOpcionInterface() {
 
 				@Override
-				public boolean ejecutar(PrintStream out) {
+				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
 					out.println("Adios!!!");
 					return true;
 				}

@@ -35,7 +35,7 @@ class BasededatosTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		this.datos = new Basededatos();
+		this.datos = new Basededatos(System.out);
 		this.datos.iniciarServicios();
 	}
 

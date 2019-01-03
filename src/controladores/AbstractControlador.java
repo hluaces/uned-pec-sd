@@ -1,11 +1,13 @@
 package controladores;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import servicios.ServicioInterface;
 import servicios.exception.ServicioYaIniciadoException;
+import servicios.menu.ServicioMenu;
 
 /**
  * @author Héctor Luaces Novo <hector@luaces-novo.es>
@@ -13,10 +15,20 @@ import servicios.exception.ServicioYaIniciadoException;
 public abstract class AbstractControlador implements ControladorInterface {
 	protected Map<String, ServicioInterface> servicios;
 
+	protected ServicioMenu menu;
+
+	protected PrintStream out;
+
 	public AbstractControlador() {
 		super();
 
 		this.servicios = new HashMap<>();
+	}
+
+	public AbstractControlador(PrintStream out) {
+		this();
+
+		this.out = out;
 	}
 
 	@Override
@@ -42,6 +54,21 @@ public abstract class AbstractControlador implements ControladorInterface {
 	 */
 	protected boolean addServicio(String nombre, ServicioInterface s) {
 		return this.servicios.put(nombre, s) != null;
+	}
+
+	/**
+	 * Añade un menú a este controlador
+	 * 
+	 * @param s Servicio del menú a añadir
+	 * @return boolean
+	 */
+	protected boolean addMenu(ServicioMenu s) {
+		if (!this.addServicio("menu", s)) {
+			return false;
+		}
+
+		this.menu = s;
+		return true;
 	}
 
 	/**
