@@ -1,4 +1,4 @@
-package servicios.menu;
+package menus;
 
 import java.io.PrintStream;
 import java.util.HashMap;

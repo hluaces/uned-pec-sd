@@ -5,6 +5,7 @@ import java.util.List;
 import servicios.ServicioInterface;
 
 /**
+ * Interfaz que expone las funciones públicas de todos los controladores.
  * 
  * @author Héctor Luaces Novo <hector@luaces-novo.es>
  */
@@ -23,4 +24,9 @@ public interface ControladorInterface {
 	 * @return boolean
 	 */
 	public boolean iniciarServicios();
+
+	/**
+	 * Muestra por pantalla el menú asociado al controlador.
+	 */
+	public void mostrarMenu();
 }

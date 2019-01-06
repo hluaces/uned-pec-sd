@@ -1,4 +1,4 @@
-package servicios.menu;
+package menus;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -7,13 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import servicios.AbstractServicio;
-import servicios.EstadoServicio;
 import servicios.exception.ServicioYaIniciadoException;
 
 /**
- * Este servicio auxiliar permite mostrar menús que ejecutarán callbacks
- * previamente definidos.
+ * Menús que mustran opciones con callbacks previamente definidos cuando éstas
+ * son elegidas.
  * 
  * Se usará para que los controladores puedan definir uno y ofrecer así algún
  * mecanismo de interacción con el mismo al usuario.
@@ -23,7 +21,7 @@ import servicios.exception.ServicioYaIniciadoException;
  * 
  * @author Héctor Luaces Novo <hector@luaces-novo.es>
  */
-public class ServicioMenu extends AbstractServicio implements ServicioMenuInterface {
+public class Menu implements MenuInterface {
 	/**
 	 * La clase que se usará para recibir eventos de teclado
 	 */
@@ -39,7 +37,7 @@ public class ServicioMenu extends AbstractServicio implements ServicioMenuInterf
 	 */
 	private PrintStream out;
 
-	public ServicioMenu(PrintStream out) {
+	public Menu(PrintStream out) {
 		super();
 		this.out = out;
 		this.opciones = new ArrayList<>();
@@ -50,18 +48,9 @@ public class ServicioMenu extends AbstractServicio implements ServicioMenuInterf
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected boolean _iniciar() {
-		return true;
-	}
-
-	@Override
-	public boolean iniciar() throws ServicioYaIniciadoException {
+	public void mostrar() {
 		boolean parar = false;
 		boolean activada = false;
-
-		if (!super.iniciar()) {
-			return false;
-		}
 
 		this.mostrarOpciones();
 
@@ -104,20 +93,6 @@ public class ServicioMenu extends AbstractServicio implements ServicioMenuInterf
 				}
 			}
 		}
-
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean _parar() {
-		this.scanner.close();
-		this.scanner = null;
-		this.opciones = new ArrayList<>();
-
-		return true;
 	}
 
 	/**
@@ -126,10 +101,6 @@ public class ServicioMenu extends AbstractServicio implements ServicioMenuInterf
 	@Override
 	public OpcionMenuInterface addOpcion(String textoOpcion, CallbackOpcionInterface callback)
 			throws ServicioYaIniciadoException {
-		if (this.getEstado() == EstadoServicio.EN_EJECUCION) {
-			throw new ServicioYaIniciadoException("No se pueden añadir opciones en un servicio de menú no iniciado");
-		}
-
 		OpcionMenuInterface o = new OpcionMenu(this.out, this.scanner).setNumeroOpcion(this.opciones.size() + 1)
 				.setTextoOpcion(textoOpcion).setCallback(callback);
 
@@ -155,7 +126,7 @@ public class ServicioMenu extends AbstractServicio implements ServicioMenuInterf
 	}
 
 	public static void main(String[] argc) {
-		ServicioMenuInterface s = new ServicioMenu(System.out);
+		MenuInterface s = new Menu(System.out);
 
 		try {
 			s.addOpcion("Imprime 'hola mundo'", new CallbackOpcionInterface() {
@@ -183,7 +154,7 @@ public class ServicioMenu extends AbstractServicio implements ServicioMenuInterf
 
 			}).setFinal(true);
 
-			s.iniciar();
+			s.mostrar();
 		} catch (ServicioYaIniciadoException e) {
 			e.printStackTrace();
 		} finally {

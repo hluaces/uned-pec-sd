@@ -9,6 +9,8 @@ import common.TrinoInterface;
 import servicios.ServicioDatosInterface;
 
 /**
+ * Interfaz que expone las funciones públicas del controlador de base de datos.
+ * 
  * @author Héctor Luaces Novo <hector@luaces-novo.es>
  */
 public interface BasededatosInterface {

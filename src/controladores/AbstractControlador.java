@@ -5,18 +5,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import menus.Menu;
 import servicios.ServicioInterface;
 import servicios.exception.ServicioYaIniciadoException;
-import servicios.menu.ServicioMenu;
 
 /**
+ * Controlador abstracto que encapsula la mayoría de funcionalidad básica que
+ * será reutilizada por cada una de las implementaciones específicas.
+ * 
  * @author Héctor Luaces Novo <hector@luaces-novo.es>
  */
 public abstract class AbstractControlador implements ControladorInterface {
+	/**
+	 * Agrupa todos los servicios asociados a este controlador asociándole un nombre
+	 * arbitrario a cada uno.
+	 */
 	protected Map<String, ServicioInterface> servicios;
 
-	protected ServicioMenu menu;
+	/**
+	 * El menú asociado a este controlador y que permitirá al usuario interactuar
+	 * con él.
+	 */
+	protected Menu menu;
 
+	/**
+	 * El stream de salida que se usará si el controlador necesita avisar de algo al
+	 * usuario.
+	 */
 	protected PrintStream out;
 
 	public AbstractControlador() {
@@ -62,13 +77,17 @@ public abstract class AbstractControlador implements ControladorInterface {
 	 * @param s Servicio del menú a añadir
 	 * @return boolean
 	 */
-	protected boolean addMenu(ServicioMenu s) {
-		if (!this.addServicio("menu", s)) {
-			return false;
-		}
-
+	protected boolean addMenu(Menu s) {
 		this.menu = s;
 		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void mostrarMenu() {
+		this.menu.mostrar();
 	}
 
 	/**

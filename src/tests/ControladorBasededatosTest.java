@@ -6,6 +6,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import common.DatosUsuario;
+import common.DatosUsuarioInterface;
+import common.Trino;
 import controladores.Basededatos;
 
 class ControladorBasededatosTest {
@@ -26,7 +29,21 @@ class ControladorBasededatosTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
+		int totalTrinos = 0;
+
 		this.datos = new Basededatos(System.out);
+		this.datos.iniciarServicios();
+
+		for (int i = 0; i < 100; i++) {
+			DatosUsuarioInterface u = new DatosUsuario("Nombre_" + i, "Nick_" + i, "password_" + i);
+			this.datos.addUsuario(u);
+
+			for (int k = 0; k < 20; k++) {
+				totalTrinos++;
+				this.datos.addTrino(new Trino("Esto es el trino número " + totalTrinos, u.getNick()));
+			}
+		}
+
 	}
 
 	@AfterEach
@@ -36,5 +53,6 @@ class ControladorBasededatosTest {
 	@Test
 	void test() {
 		this.datos.iniciarServicios();
+		this.datos.mostrarMenu();
 	}
 }

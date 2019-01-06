@@ -3,18 +3,17 @@ package controladores;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import common.DatosUsuarioInterface;
 import common.TrinoInterface;
+import menus.CallbackOpcionInterface;
+import menus.Menu;
+import menus.ParametroOpcionInterface;
 import servicios.ServicioDatosInterface;
 import servicios.ServiciosFactory;
 import servicios.exception.ServicioYaIniciadoException;
-import servicios.menu.CallbackOpcionInterface;
-import servicios.menu.ParametroOpcionInterface;
-import servicios.menu.ParametroOpcionValidadorInterface;
-import servicios.menu.ServicioMenu;
-import servicios.menu.exception.ParametroCallbackNoValido;
 
 /**
  * Esta entidad es la encargada de almacenar todos los datos del sistema:
@@ -35,8 +34,11 @@ final public class Basededatos extends AbstractControlador implements Basededato
 		this.crearMenu();
 	}
 
+	/**
+	 * Inicializa el menú usado por el controlador.
+	 */
 	protected void crearMenu() {
-		ServicioMenu menu = new ServicioMenu(this.out);
+		Menu menu = new Menu(this.out);
 
 		try {
 			menu.addOpcion("Información de la Base de Datos.", new CallbackOpcionInterface() {
@@ -47,33 +49,15 @@ final public class Basededatos extends AbstractControlador implements Basededato
 				}
 			});
 			menu.addOpcion("Listar usuarios registrados.", new CallbackOpcionInterface() {
-
 				@Override
 				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-					out.println("Listado usuarios...");
-					return true;
+					return listarUsuariosRegistrados(out);
 				}
 			});
 			menu.addOpcion("Listar trinos.", new CallbackOpcionInterface() {
-
 				@Override
 				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-					out.println("Listado trinos...");
-					return true;
-				}
-			}).addParametro("Trino", "¿Qué trinos tronco?", new ParametroOpcionValidadorInterface() {
-
-				@Override
-				public boolean validar(Object dato) throws ParametroCallbackNoValido {
-					if (!dato.equals("todos")) {
-						throw new ParametroCallbackNoValido("El valor ha de ser 'todos'");
-					}
-					return true;
-				}
-
-				@Override
-				public String getMensajeError() {
-					return "Solo nos vale 'todos'";
+					return listarTrinos(out);
 				}
 			});
 			menu.addOpcion("Salir.", new CallbackOpcionInterface() {
@@ -90,6 +74,35 @@ final public class Basededatos extends AbstractControlador implements Basededato
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Muestra por un stream de salida los us uarios registados
+	 * 
+	 * @param out Stream de salida a usar
+	 * @return boolean
+	 */
+	protected boolean listarUsuariosRegistrados(PrintStream out) {
+		for (Entry<String, DatosUsuarioInterface> s : this.getUsuarios().entrySet()) {
+			out.println(" * " + s.getKey());
+		}
+
+		return true;
+	}
+
+	/**
+	 * Lista los trinos creados en la base de datos
+	 * 
+	 * @param out Stream de salida a usar
+	 * @return boolean
+	 */
+	protected boolean listarTrinos(PrintStream out) {
+		for (Entry<String, List<TrinoInterface>> s : this.getTrinos().entrySet()) {
+			for (TrinoInterface t : s.getValue()) {
+				out.println(" * " + t.ObtenerNickPropietario() + ": " + t.ObtenerTrino());
+			}
+		}
+		return true;
 	}
 
 	/**

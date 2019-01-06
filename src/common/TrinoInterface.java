@@ -1,7 +1,8 @@
 package common;
 
 /**
- * Interfaz de un Trino creada para mantener la orientación a objetos.
+ * Interfaz de un Trino creada para mantener la orientación a objetos a la hora
+ * de trabajar con Trinos.
  * 
  * @author Héctor Luaces Novo <hector@luaces-novo.es>
  */

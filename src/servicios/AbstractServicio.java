@@ -5,9 +5,15 @@ import servicios.exception.ServicioRuntimeException;
 import servicios.exception.ServicioYaIniciadoException;
 
 /**
+ * Clase abstracta que encapsula funcionalidad básica de los servicios que será
+ * usada por cada implementación específica
+ * 
  * @author Héctor Luaces Novo <hector@luaces-novo.es>
  */
 public abstract class AbstractServicio implements ServicioInterface {
+	/**
+	 * El estado del servicio
+	 */
 	protected EstadoServicio status;
 
 	public AbstractServicio() {

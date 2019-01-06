@@ -6,6 +6,10 @@ import java.util.Date;
 /**
  * Clase trino proporcionada por el equipo docente.
  * 
+ * Los únicos cambios realizados respecto a la clase original son la
+ * documentación y la interfaz TrinoInterface, en aras de mantener la cohesión
+ * con el resto de la programación de la aplicación.
+ * 
  * @author Héctor Luaces Novo <hector@luaces-novo.es>
  */
 public final class Trino implements Serializable, TrinoInterface {

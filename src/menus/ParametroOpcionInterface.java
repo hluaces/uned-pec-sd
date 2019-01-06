@@ -1,4 +1,4 @@
-package servicios.menu;
+package menus;
 
 import servicios.menu.exception.ParametroCallbackNoValido;
 

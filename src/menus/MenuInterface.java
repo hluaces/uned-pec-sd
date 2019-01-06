@@ -1,9 +1,14 @@
-package servicios.menu;
+package menus;
 
-import servicios.ServicioInterface;
 import servicios.exception.ServicioYaIniciadoException;
 
-interface ServicioMenuInterface extends ServicioInterface {
+/**
+ * Interfaz para los menús: mecanismos que se asocian a un controlador y
+ * permiten al usuario interactuar con ellos.
+ * 
+ * @author Héctor Luaces Novo <hector@luaces-novo.es>
+ */
+interface MenuInterface {
 	/**
 	 * Añade una opción al menú. El propio servicio se encargará intermante de
 	 * configurarla acorde a las necesidades pasadas.
@@ -19,5 +24,10 @@ interface ServicioMenuInterface extends ServicioInterface {
 	 */
 	OpcionMenuInterface addOpcion(String textoOpcion, CallbackOpcionInterface callback)
 			throws ServicioYaIniciadoException;
+
+	/**
+	 * Muestra el menú por pantalla
+	 */
+	public void mostrar();
 
 }
