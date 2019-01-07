@@ -1,7 +1,7 @@
 package es.uned.servidor.servicios;
 
-import es.uned.servicios.AbstractServicio;
-import es.uned.servicios.ServicioAutenticacionInterface;
+import es.uned.common.servicios.AbstractServicio;
+import es.uned.common.servicios.ServicioAutenticacionInterface;
 
 /**
  * @author Héctor Luaces Novo <hector@luaces-novo.es>

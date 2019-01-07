@@ -1,7 +1,7 @@
 package es.uned.servidor.servicios;
 
-import es.uned.servicios.AbstractServicio;
-import es.uned.servicios.ServicioGestorInterface;
+import es.uned.common.servicios.AbstractServicio;
+import es.uned.common.servicios.ServicioGestorInterface;
 
 /**
  * @author Héctor Luaces Novo <hector@luaces-novo.es>

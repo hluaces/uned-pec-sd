@@ -16,7 +16,7 @@ import es.uned.basededatos.servicios.ServicioDatosImpl;
 import es.uned.common.DatosUsuario;
 import es.uned.common.Trino;
 import es.uned.common.TrinoInterface;
-import es.uned.servicios.ServicioDatosInterface;
+import es.uned.common.servicios.ServicioDatosInterface;
 
 /**
  * @author Héctor Luaces Novo <hector@luaces-novo.es>

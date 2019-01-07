@@ -1,7 +1,7 @@
 package es.uned.servidor.controladores;
 
-import es.uned.servicios.ServicioAutenticacionInterface;
-import es.uned.servicios.ServicioGestorInterface;
+import es.uned.common.servicios.ServicioAutenticacionInterface;
+import es.uned.common.servicios.ServicioGestorInterface;
 
 /**
  * La entidad Servidor se encarga de controlar el proceso de autenticación de

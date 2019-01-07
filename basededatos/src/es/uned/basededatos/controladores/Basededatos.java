@@ -1,6 +1,7 @@
 package es.uned.basededatos.controladores;
 
 import java.io.PrintStream;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -9,20 +10,20 @@ import java.util.Set;
 import es.uned.basededatos.servicios.ServicioDatosImpl;
 import es.uned.common.DatosUsuarioInterface;
 import es.uned.common.TrinoInterface;
-import es.uned.controladores.AbstractControlador;
-import es.uned.controladores.BasededatosInterface;
-import es.uned.menus.CallbackOpcionInterface;
-import es.uned.menus.Menu;
-import es.uned.menus.ParametroOpcionInterface;
-import es.uned.servicios.ServicioDatosInterface;
-import es.uned.servicios.exception.ServicioYaIniciadoException;
+import es.uned.common.controladores.AbstractControlador;
+import es.uned.common.controladores.BasededatosInterface;
+import es.uned.common.menus.CallbackOpcionInterface;
+import es.uned.common.menus.Menu;
+import es.uned.common.menus.ParametroOpcionInterface;
+import es.uned.common.servicios.ServicioDatosInterface;
+import es.uned.common.servicios.exception.ServicioYaIniciadoException;
 
 /**
  * Esta entidad es la encargada de almacenar todos los datos del sistema:
  * Usuarios, Seguidores, Trinos, ...
  * 
  * Sólo la entidad Servidor puede consumir el servicio Datos que suministra esta
- * entidad.
+ * entidad.zz
  * 
  * @author Héctor Luaces Novo <hector@luaces-novo.es>
  */
@@ -124,7 +125,7 @@ final public class Basededatos extends AbstractControlador implements Basededato
 	 * @return true si está conectado, false en caso contrario
 	 */
 	@Override
-	public boolean isConectado(String nick) {
+	public boolean isConectado(String nick) throws RemoteException {
 		return this.getServicioDatos().isConectado(nick);
 	}
 

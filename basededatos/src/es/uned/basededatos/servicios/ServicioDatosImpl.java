@@ -10,8 +10,8 @@ import java.util.Set;
 
 import es.uned.common.DatosUsuarioInterface;
 import es.uned.common.TrinoInterface;
-import es.uned.servicios.AbstractServicio;
-import es.uned.servicios.ServicioDatosInterface;
+import es.uned.common.servicios.AbstractServicio;
+import es.uned.common.servicios.ServicioDatosInterface;
 
 /**
  * Servicio Datos: Este servicio hará las funciones de una base de datos que

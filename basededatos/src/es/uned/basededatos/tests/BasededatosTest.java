@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -45,14 +46,14 @@ class BasededatosTest {
 	}
 
 	@Test
-	void testIsConectado() {
+	void testIsConectado() throws RemoteException {
 		assertFalse(this.datos.isConectado("alskdjalsjdlajd"), "Usuario desconectado");
 		this.datos.addConectado("pepe");
 		assertTrue(this.datos.isConectado("pepe"), "Usario conectado");
 	}
 
 	@Test
-	void testConectados() {
+	void testConectados() throws RemoteException {
 		assertTrue(this.datos.addConectado("pepe"), "Conectando usuario");
 		assertFalse(this.datos.addConectado("pepe"), "Conectando mismo usuario");
 		assertTrue(this.datos.addConectado("antonio"), "Conectando usuario");
@@ -68,7 +69,7 @@ class BasededatosTest {
 	}
 
 	@Test
-	void testUsuarios() {
+	void testUsuarios() throws RemoteException {
 		DatosUsuario u = new DatosUsuario("Nombre de pepe", "pepe", "pass de pepe");
 		DatosUsuarioInterface u2;
 
@@ -83,7 +84,7 @@ class BasededatosTest {
 	}
 
 	@Test
-	void testAddSeguidor() {
+	void testAddSeguidor() throws RemoteException {
 		this.datos.addUsuario(new DatosUsuario("seguido", "seguido", ""));
 
 		for (int i = 0; i < 10; i++) {
@@ -109,7 +110,7 @@ class BasededatosTest {
 	}
 
 	@Test
-	void testTrinos() {
+	void testTrinos() throws RemoteException {
 		int total = 0, total2 = 0;
 
 		/**
