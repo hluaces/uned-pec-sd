@@ -1,12 +1,10 @@
 package es.uned.basededatos;
 
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
+import java.rmi.Remote;
 
 import es.uned.basededatos.controladores.Basededatos;
-import es.uned.common.controladores.BasededatosInterface;
-import es.uned.common.controladores.RmiControladores;
+import es.uned.basededatos.tests.ControladorBasededatosTest;
+import es.uned.common.rmi.ControladorRegistro;
 
 /**
  * Método "main" del controlador de base de datos, que lo inicialia y prepara
@@ -27,22 +25,30 @@ public class Main {
 		datos.iniciarServicios();
 		System.out.println(" [OK]");
 
-		System.out.print("Preparando RMI...");
+		System.out.println("Preparando RMI...");
 
 		try {
-			BasededatosInterface b = (BasededatosInterface) UnicastRemoteObject.exportObject(datos,
-					RmiControladores.BASEDEDATOS_PORT);
+			ControladorRegistro con = new ControladorRegistro();
 
-			Registry r = LocateRegistry.createRegistry(9999);
-
-			r.rebind(RmiControladores.BASEDEDATOS_RMI, b);
-
-			System.out.println(" [OK]");
-			System.out.println("Iniciando menú de controlador");
+			Remote exp = con.exportarObjeto(datos);
+			ControladorBasededatosTest.generarDatosDummy(datos);
 			datos.mostrarMenu();
 
-			r.unbind(RmiControladores.BASEDEDATOS_RMI);
-			UnicastRemoteObject.unexportObject(datos, true);
+			con.limpiarObjeto(datos);
+			/*
+			 * BasededatosInterface b = (BasededatosInterface)
+			 * UnicastRemoteObject.exportObject(datos, RmiControladores.BASEDEDATOS_PORT);
+			 * 
+			 * Registry r = LocateRegistry.createRegistry(9999);
+			 * 
+			 * r.rebind(RmiControladores.BASEDEDATOS_RMI, b);
+			 * 
+			 * System.out.println(" [OK]");
+			 * System.out.println("Iniciando menú de controlador"); datos.mostrarMenu();
+			 * 
+			 * r.unbind(RmiControladores.BASEDEDATOS_RMI);
+			 * UnicastRemoteObject.unexportObject(datos, true);
+			 */
 
 		} catch (Exception e) {
 			System.out.println(" [ERROR]");

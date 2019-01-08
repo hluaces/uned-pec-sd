@@ -15,6 +15,7 @@ import es.uned.common.controladores.BasededatosInterface;
 import es.uned.common.menus.CallbackOpcionInterface;
 import es.uned.common.menus.Menu;
 import es.uned.common.menus.ParametroOpcionInterface;
+import es.uned.common.rmi.ControladorRegistro;
 import es.uned.common.servicios.ServicioDatosInterface;
 import es.uned.common.servicios.exception.ServicioYaIniciadoException;
 
@@ -47,7 +48,8 @@ final public class Basededatos extends AbstractControlador implements Basededato
 			menu.addOpcion("Información de la Base de Datos.", new CallbackOpcionInterface() {
 				@Override
 				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-					out.println("Información...");
+					out.println("Mostrando identificador RMI");
+					out.println(ControladorRegistro.getRmiUri(Basededatos.this));
 					return true;
 				}
 			});
@@ -345,4 +347,5 @@ final public class Basededatos extends AbstractControlador implements Basededato
 	public TrinoInterface getTrino(String usuario, String textoTrino) {
 		return this.getServicioDatos().getTrino(usuario, textoTrino);
 	}
+
 }
