@@ -6,7 +6,7 @@ import es.uned.common.DatosUsuario;
 import es.uned.common.controladores.BasededatosInterface;
 import es.uned.common.rmi.ControladorRegistro;
 
-public class Main {
+public class UsuarioMain {
 	public static void main(String[] args) {
 		try {
 			ControladorRegistro r = new ControladorRegistro();

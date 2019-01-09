@@ -88,6 +88,11 @@ final public class Basededatos extends AbstractControlador implements Basededato
 	 * @return boolean
 	 */
 	protected boolean listarUsuariosRegistrados(PrintStream out) {
+		if (this.getUsuarios().entrySet().isEmpty()) {
+			out.println("Todavía no hay usuarios registrados.");
+			return true;
+		}
+
 		for (Entry<String, DatosUsuarioInterface> s : this.getUsuarios().entrySet()) {
 			out.println(" * " + s.getKey());
 		}
@@ -102,6 +107,11 @@ final public class Basededatos extends AbstractControlador implements Basededato
 	 * @return boolean
 	 */
 	protected boolean listarTrinos(PrintStream out) {
+		if (this.getTrinos().entrySet().isEmpty()) {
+			out.println("Todavía no hay trinos en el sistema.");
+			return true;
+		}
+
 		for (Entry<String, List<TrinoInterface>> s : this.getTrinos().entrySet()) {
 			for (TrinoInterface t : s.getValue()) {
 				out.println(" * " + t.ObtenerNickPropietario() + ": " + t.ObtenerTrino());

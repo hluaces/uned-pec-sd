@@ -9,6 +9,9 @@ import java.rmi.registry.Registry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 
+import es.uned.common.controladores.BasededatosInterface;
+import es.uned.common.controladores.ServidorInterface;
+
 /**
  * Clase encargada de gestionar una única instancia de ejecución del registro
  * RMI.
@@ -19,8 +22,6 @@ import java.rmi.server.UnicastRemoteObject;
  */
 final public class ControladorRegistro {
 	private static int PORT = 1111;
-
-	private int lastPort = PORT;
 
 	/**
 	 * La instancia del registro que será mantenida por el controlador
@@ -34,7 +35,6 @@ final public class ControladorRegistro {
 			System.out.println("createRegistry...");
 		} catch (NotBoundException e) {
 		} catch (ConnectException | ExportException e) {
-			System.out.println("geteEgistry...");
 			this.registro = LocateRegistry.getRegistry(ControladorRegistro.PORT);
 		}
 	}
@@ -77,6 +77,26 @@ final public class ControladorRegistro {
 	}
 
 	/**
+	 * Devuelve un número de puerto libre en el registro
+	 * 
+	 * @return int
+	 */
+	private int getPuerto(Remote r) {
+
+		String nombre = ControladorRegistro.getName(r);
+
+		if (nombre.equals(ControladorRegistro.getName(BasededatosInterface.class))) {
+			return 1112;
+		}
+
+		if (nombre.equals(ControladorRegistro.getName(ServidorInterface.class))) {
+			return 1113;
+		}
+
+		return 1114;
+	}
+
+	/**
 	 * Dado un objeto ExportableRMI, se encarga de exportarlo y devolver su interfaz
 	 * Remote.
 	 * 
@@ -89,10 +109,9 @@ final public class ControladorRegistro {
 	 * @throws RemoteException
 	 */
 	public Remote exportarObjeto(Remote r) throws RemoteException {
-		Remote ret = UnicastRemoteObject.exportObject(r, ++this.lastPort);
+		Remote ret = UnicastRemoteObject.exportObject(r, this.getPuerto(r));
 		this.registro.rebind(ControladorRegistro.getName(r), ret);
 
-		System.out.println("Exportando " + ControladorRegistro.getName(r));
 		return ret;
 	}
 
@@ -105,7 +124,6 @@ final public class ControladorRegistro {
 	 */
 	public Remote buscarObjeto(Class<?> c) throws RemoteException {
 		try {
-			System.out.println("Buscando: " + ControladorRegistro.getName(c));
 			return this.registro.lookup(ControladorRegistro.getName(c));
 		} catch (NotBoundException e) {
 			return null;

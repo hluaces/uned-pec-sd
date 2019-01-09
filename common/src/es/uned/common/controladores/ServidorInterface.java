@@ -1,5 +1,7 @@
 package es.uned.common.controladores;
 
-public interface ServidorInterface {
+import java.rmi.Remote;
+
+public interface ServidorInterface extends Remote {
 
 }
