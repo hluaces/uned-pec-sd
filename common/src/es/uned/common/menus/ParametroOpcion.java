@@ -89,9 +89,18 @@ final class ParametroOpcion implements ParametroOpcionInterface {
 	public boolean validar(Object dato) throws ParametroCallbackNoValido {
 		for (ParametroOpcionValidadorInterface i : this.validadores) {
 			if (!i.validar(dato)) {
-				return false;
+				throw new ParametroCallbackNoValido(i.getMensajeError());
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ParametroOpcionInterface addValidador(ParametroOpcionValidadorInterface a) {
+		this.validadores.add(a);
+		return this;
 	}
 }

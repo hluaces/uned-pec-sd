@@ -78,4 +78,13 @@ public interface ServicioAutenticacionInterface extends ServicioInterface {
 	 * @return Lista ade usuarios
 	 */
 	public List<String> getUsuariosIdentificados();
+
+	/**
+	 * Determina si un usuario ya está registrado
+	 * 
+	 * @param nick Nick a comprobar
+	 * @return boolean
+	 * @throws RemoteException
+	 */
+	public boolean estaRegistrado(String nick) throws RemoteException;
 }

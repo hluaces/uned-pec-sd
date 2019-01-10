@@ -12,6 +12,13 @@ public final class DatosUsuario implements DatosUsuarioInterface, Serializable {
 	private static final long serialVersionUID = -1139206633143592204L;
 	private String nombre, nick, password;
 
+	/**
+	 * Crea un nuevo conjunto de datos de usuario
+	 * 
+	 * @param nombre   Nombre del usuario
+	 * @param nick     Su nick
+	 * @param password Contraseña
+	 */
 	public DatosUsuario(String nombre, String nick, String password) {
 		super();
 		this.nombre = nombre;

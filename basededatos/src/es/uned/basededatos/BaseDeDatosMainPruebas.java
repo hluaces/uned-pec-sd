@@ -31,7 +31,7 @@ public class BaseDeDatosMainPruebas {
 			System.out.println("[OK]");
 
 			System.out.print("Exportando base de datos... ");
-			Remote exp = con.exportarObjeto(datos);
+			con.exportarObjeto(datos);
 			System.out.println("[OK]");
 
 			datos.mostrarMenu();

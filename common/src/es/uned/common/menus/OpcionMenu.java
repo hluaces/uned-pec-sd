@@ -1,13 +1,12 @@
 package es.uned.common.menus;
 
 import java.io.PrintStream;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 import es.uned.common.menu.exception.ParametroCallbackNoValido;
-
-import java.util.Scanner;
 
 /**
  * Clase que representa una opción de un menú.
@@ -71,7 +70,7 @@ final class OpcionMenu implements OpcionMenuInterface {
 
 		this.out = out;
 		this.scanner = s;
-		this.parametros = new HashMap<>();
+		this.parametros = new LinkedHashMap<>();
 	}
 
 	/**

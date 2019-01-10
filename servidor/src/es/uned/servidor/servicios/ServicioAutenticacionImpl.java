@@ -1,7 +1,6 @@
 package es.uned.servidor.servicios;
 
 import java.rmi.RemoteException;
-import java.rmi.Remote;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,7 +66,6 @@ final public class ServicioAutenticacionImpl extends AbstractServicio implements
 			this.s = new SecureRandom();
 			return true;
 		} catch (RemoteException e) {
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -143,7 +141,7 @@ final public class ServicioAutenticacionImpl extends AbstractServicio implements
 		DatosUsuarioInterface u = this.data.getUsuario(usuario);
 
 		if (u == null) {
-			throw new UsuarioNoExisteException("El usuario " + usuario + " no existe.");
+			throw new UsuarioNoExisteException(usuario);
 		}
 
 		if (!u.getPassword().equals(password)) {
@@ -174,11 +172,21 @@ final public class ServicioAutenticacionImpl extends AbstractServicio implements
 	 */
 	@Override
 	public boolean registrar(DatosUsuarioInterface datos) throws AutenticacionExcepcion, RemoteException {
-		if (this.data.getTrinosUsuario(datos.getNick())) {
+		if (this.data.getUsuario(datos.getNick()) != null) {
 			throw new AutenticacionExcepcion("Ese usuario ya está registrado");
 		}
 
 		return this.data.addUsuario(datos) != null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @Override
+	 */
+	@Override
+	public boolean estaRegistrado(String nick) throws RemoteException {
+		return this.data.getUsuario(nick) != null;
 	}
 
 	/**

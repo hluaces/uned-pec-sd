@@ -30,4 +30,9 @@ interface MenuInterface {
 	 */
 	public void mostrar();
 
+	/**
+	 * Resetea todas las opciones del menú
+	 */
+	public void reset();
+
 }

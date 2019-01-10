@@ -1,27 +1,28 @@
 package es.uned.usuario;
 
-import java.rmi.RemoteException;
-
-import es.uned.common.DatosUsuario;
-import es.uned.common.controladores.BasededatosInterface;
 import es.uned.common.rmi.ControladorRegistro;
+import es.uned.usuario.controladores.Usuario;
 
 public class UsuarioMain {
 	public static void main(String[] args) {
+		System.out.print("Preparando RMI... ");
+
 		try {
-			ControladorRegistro r = new ControladorRegistro();
+			ControladorRegistro con = new ControladorRegistro();
+			System.out.println("[OK]");
 
-			BasededatosInterface datos = (BasededatosInterface) r.buscarObjeto(BasededatosInterface.class);
+			System.out.print("Iniciando sistema de usuario... ");
+			Usuario u = new Usuario(System.out, con);
+			System.out.println("[OK]");
 
-			datos.addUsuario(new DatosUsuario("pepe", "pepito", "123123"));
+			u.mostrarMenu();
 
-			for (String user : datos.getUsuarios().keySet()) {
-				System.out.println(user);
-			}
-
-			System.exit(0);
-		} catch (RemoteException e) {
+			con.limpiarObjeto(u);
+		} catch (Exception e) {
+			System.out.println(" [ERROR]");
+			System.out.println("Ha ocurrido un error, cancelando...");
 			e.printStackTrace();
+
 			System.exit(1);
 		}
 	}

@@ -17,7 +17,6 @@ import es.uned.common.menus.Menu;
 import es.uned.common.menus.ParametroOpcionInterface;
 import es.uned.common.rmi.ControladorRegistro;
 import es.uned.common.servicios.ServicioDatosInterface;
-import es.uned.common.servicios.exception.ServicioYaIniciadoException;
 
 /**
  * Esta entidad es la encargada de almacenar todos los datos del sistema:
@@ -44,41 +43,36 @@ final public class Basededatos extends AbstractControlador implements Basededato
 	protected void crearMenu() {
 		Menu menu = new Menu(this.out);
 
-		try {
-			menu.addOpcion("Información de la Base de Datos.", new CallbackOpcionInterface() {
-				@Override
-				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-					out.println("Mostrando identificador RMI");
-					out.println(ControladorRegistro.getRmiUri(Basededatos.this));
-					return true;
-				}
-			});
-			menu.addOpcion("Listar usuarios registrados.", new CallbackOpcionInterface() {
-				@Override
-				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-					return listarUsuariosRegistrados(out);
-				}
-			});
-			menu.addOpcion("Listar trinos.", new CallbackOpcionInterface() {
-				@Override
-				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-					return listarTrinos(out);
-				}
-			});
-			menu.addOpcion("Salir.", new CallbackOpcionInterface() {
+		menu.addOpcion("Información de la Base de Datos.", new CallbackOpcionInterface() {
+			@Override
+			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+				out.println("Mostrando identificador RMI");
+				out.println(ControladorRegistro.getRmiUri(Basededatos.this));
+				return true;
+			}
+		});
+		menu.addOpcion("Listar usuarios registrados.", new CallbackOpcionInterface() {
+			@Override
+			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+				return listarUsuariosRegistrados(out);
+			}
+		});
+		menu.addOpcion("Listar trinos.", new CallbackOpcionInterface() {
+			@Override
+			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+				return listarTrinos(out);
+			}
+		});
+		menu.addOpcion("Salir.", new CallbackOpcionInterface() {
 
-				@Override
-				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-					out.println("Saliendo del sistema de base de datos.");
-					return true;
-				}
-			}).setFinal(true);
+			@Override
+			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+				out.println("Saliendo del sistema de base de datos.");
+				return true;
+			}
+		}).setFinal(true);
 
-			this.addMenu(menu);
-		} catch (ServicioYaIniciadoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.addMenu(menu);
 	}
 
 	/**

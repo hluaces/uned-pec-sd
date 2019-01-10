@@ -1,8 +1,6 @@
 package es.uned.basededatos;
 
 import java.rmi.Remote;
-import java.rmi.RemoteException;
-
 import es.uned.basededatos.controladores.Basededatos;
 import es.uned.common.rmi.ControladorRegistro;
 
@@ -29,7 +27,7 @@ public class BasededatosMain {
 			System.out.println("[OK]");
 
 			System.out.print("Exportando base de datos... ");
-			Remote exp = con.exportarObjeto(datos);
+			con.exportarObjeto(datos);
 			System.out.println("[OK]");
 
 			datos.mostrarMenu();

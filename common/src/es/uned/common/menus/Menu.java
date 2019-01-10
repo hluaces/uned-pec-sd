@@ -48,6 +48,14 @@ public class Menu implements MenuInterface {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void reset() {
+		this.opciones = new ArrayList<>();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void mostrar() {
 		boolean parar = false;
 		boolean activada = false;
@@ -87,6 +95,7 @@ public class Menu implements MenuInterface {
 				}
 			} catch (InputMismatchException e) {
 				this.mostrarMensajeFallo();
+				this.scanner.nextLine();
 			} finally {
 				if (!parar) {
 					this.mostrarOpciones();
@@ -99,8 +108,7 @@ public class Menu implements MenuInterface {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public OpcionMenuInterface addOpcion(String textoOpcion, CallbackOpcionInterface callback)
-			throws ServicioYaIniciadoException {
+	public OpcionMenuInterface addOpcion(String textoOpcion, CallbackOpcionInterface callback) {
 		OpcionMenuInterface o = new OpcionMenu(this.out, this.scanner).setNumeroOpcion(this.opciones.size() + 1)
 				.setTextoOpcion(textoOpcion).setCallback(callback);
 

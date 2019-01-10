@@ -41,6 +41,14 @@ public interface ParametroOpcionInterface {
 	public ParametroOpcionInterface setDato(Object dato) throws ParametroCallbackNoValido;
 
 	/**
+	 * Registra un nuevo validador con este parámetro opcón.
+	 * 
+	 * @param a Validador a añadir
+	 * @return self
+	 */
+	public ParametroOpcionInterface addValidador(ParametroOpcionValidadorInterface a);
+
+	/**
 	 * Devuelve el mensaje que será mostrado al usuario para presentar los datos que
 	 * han de ser introducidos como parámetro
 	 * 
