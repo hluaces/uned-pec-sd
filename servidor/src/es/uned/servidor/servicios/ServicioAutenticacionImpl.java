@@ -48,6 +48,8 @@ final public class ServicioAutenticacionImpl extends AbstractServicio implements
 		super();
 
 		this.c = c;
+		this.sesiones = new HashMap<>();
+		this.s = new SecureRandom();
 	}
 
 	/**
@@ -62,8 +64,6 @@ final public class ServicioAutenticacionImpl extends AbstractServicio implements
 				return false;
 			}
 
-			this.sesiones = new HashMap<>();
-			this.s = new SecureRandom();
 			return true;
 		} catch (RemoteException e) {
 			return false;

@@ -3,7 +3,9 @@ package es.uned.usuario.controladores;
 import java.io.PrintStream;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import es.uned.common.DatosUsuarioInterface;
@@ -141,41 +143,19 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 	private void prepararMenuLogeado() {
 		this.menu.reset();
 
-		this.menu.addOpcion("Información del usuario.", new CallbackOpcionInterface() {
+		this.menu.addOpcion("Información del usuario.", this.opcionInformacion());
+		OpcionMenuInterface o = this.menu.addOpcion("Enviar trino.", this.opcionAddTrino());
+		o.addParametro("trino", "Introduce el mensaje de tu trino: ",
+				this.getValidadorString(".+", "El trino no puede estar vacío"));
 
-			@Override
-			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-				throw new RuntimeException("Aun no implementado.");
-			}
-		});
-		this.menu.addOpcion("Enviar trino.", new CallbackOpcionInterface() {
+		this.menu.addOpcion("Listar usuarios del sistema.", this.opcionListarUsuarios());
 
-			@Override
-			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-				throw new RuntimeException("Aun no implementado");
-			}
-		});
-		this.menu.addOpcion("Listar usuarios del sistema.", new CallbackOpcionInterface() {
+		o = this.menu.addOpcion("Seguir a.", this.opcionSeguir());
+		o.addParametro("nick", "¿A quién quieres seguir?: ", this.getValidadorNickNoExiste());
 
-			@Override
-			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-				throw new RuntimeException("Aun no implementado");
-			}
-		});
-		this.menu.addOpcion("Seguir a.", new CallbackOpcionInterface() {
+		o = this.menu.addOpcion("Dejar de seguir a.", this.opcionNoseguir());
+		o.addParametro("nick", "¿A quién quieres dejar de seguir?: ", this.getValidadorNickNoExiste());
 
-			@Override
-			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-				throw new RuntimeException("Aun no implementado");
-			}
-		});
-		this.menu.addOpcion("Dejar de seguir a.", new CallbackOpcionInterface() {
-
-			@Override
-			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-				throw new RuntimeException("Aun no implementado");
-			}
-		});
 		this.menu.addOpcion("Borrar trino a los usuarios que todavía no lo han recibido.",
 				new CallbackOpcionInterface() {
 
@@ -307,6 +287,70 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 	}
 
 	/**
+	 * Devuelve una instancia de un callback que lista los usuarios registrados en
+	 * el sistema
+	 * 
+	 * @return la instancia del callback
+	 */
+	private CallbackOpcionInterface opcionListarUsuarios() {
+		return new CallbackOpcionInterface() {
+
+			@Override
+			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+				try {
+					if (getServidor() == null) {
+						throw new RuntimeException("Imposible conectar con el servidor.");
+					}
+
+					List<String> nicks = getServidor().getUsuarios();
+
+					if (nicks.size() == 0) {
+						out.println("No hay usuarios registrados");
+						return true;
+					}
+
+					for (String nick : getServidor().getUsuarios()) {
+						out.println(" - " + nick);
+					}
+
+				} catch (Exception e) {
+					out.println("Ha ocurrido un error de comunicación: ");
+					out.println(e.getMessage());
+					e.printStackTrace();
+				}
+
+				return true;
+			}
+		};
+	}
+
+	/**
+	 * Callback utilizado para enviar un trino en nombre del usuario.
+	 * 
+	 * @return La instancia del callback
+	 */
+	private CallbackOpcionInterface opcionAddTrino() {
+		return new CallbackOpcionInterface() {
+
+			@Override
+			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+				try {
+					if (!getServidor().addTrino(sesion, parametros.get("trino").getDato().toString())) {
+						throw new RuntimeException("Un error desconocido impidió enviar tu trino.");
+					}
+
+					out.println("Trino enviado con éxito");
+				} catch (AutenticacionExcepcion | RemoteException | RuntimeException e) {
+					out.println("Error al enviar tu trino: ");
+					out.println(e.getMessage());
+				}
+
+				return true;
+			}
+		};
+	}
+
+	/**
 	 * Devuelve el callback de una opción de menú que hace un logout.
 	 * 
 	 * @return La instancia del callback
@@ -333,6 +377,133 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 					prepararMenuAnonimo();
 					out.println("Cerrando sesión...");
 				}
+				return true;
+			}
+		};
+	}
+
+	/**
+	 * Callback para la opción "seguir a un usuario"
+	 * 
+	 * @return Nick del usuario a seguir
+	 */
+	private CallbackOpcionInterface opcionSeguir() {
+		return new CallbackOpcionInterface() {
+
+			@Override
+			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+				try {
+					if (getServidor() == null) {
+						throw new RuntimeException("Imposible conectar con el servidor.");
+					}
+
+					if (!getServidor().addSeguidor(parametros.get("nick").getDato().toString(), sesion)) {
+						throw new RuntimeException(
+								"No has podido realizar la acción. ¿Estás siguiendo ya a ese usuario?");
+					}
+
+					out.println("Operación terminada con éxito");
+					return true;
+				} catch (RuntimeException | RemoteException | AutenticacionExcepcion e) {
+					out.println("Ha ocurrido un error durante el proceso: ");
+					out.println(e.getMessage());
+				}
+
+				return true;
+			}
+		};
+	}
+
+	/**
+	 * Callback para la opción "seguir a un usuario"
+	 * 
+	 * @return Nick del usuario a seguir
+	 */
+	private CallbackOpcionInterface opcionNoseguir() {
+		return new CallbackOpcionInterface() {
+
+			@Override
+			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+				try {
+					if (getServidor() == null) {
+						throw new RuntimeException("Imposible conectar con el servidor.");
+					}
+
+					String seguido = parametros.get("nick").getDato().toString();
+					if (!getServidor().removeSeguidor(seguido, sesion)) {
+						throw new RuntimeException("No has podido realizar la acción. ¿Estás siguiendo a ese usuario?");
+					}
+
+					out.println("Operación terminada con éxito");
+					return true;
+				} catch (RuntimeException | RemoteException | AutenticacionExcepcion e) {
+					out.println("Ha ocurrido un error durante el proceso: ");
+					out.println(e.getMessage());
+				}
+
+				return true;
+			}
+		};
+	}
+
+	/**
+	 * Callback llamado para mostrar la información del usuario.
+	 * 
+	 * Puesto que éste controlador no ofrece servicios RMI, éstos no se muestran.
+	 * 
+	 * @return La instancia del callback.
+	 */
+	private CallbackOpcionInterface opcionInformacion() {
+		return new CallbackOpcionInterface() {
+
+			@Override
+			public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+				if (sesion == 0 || u == null) {
+					out.println("El usuario no está logeado.");
+					return true;
+				}
+
+				out.println("- Nombre: " + u.getNombre());
+				out.println("- Nick: " + u.getNick());
+				out.println("- Sesión: " + sesion);
+				out.println("- URL RMI: Ninguna. El usuario no expone servicios ajenos.");
+
+				try {
+					out.println("");
+					out.println("Lista de seguidores:");
+					Set<String> seguidores = getServidor().getSeguidores(u.getNick());
+
+					if (seguidores.size() == 0) {
+						out.println("No tienes seguidores.");
+					}
+					for (String s : seguidores) {
+						out.println(" - " + s);
+					}
+
+				} catch (RemoteException e) {
+					out.println("Error al obtener la lista de seguidores: ");
+					out.println(e.getMessage());
+					e.printStackTrace();
+				}
+
+				try {
+					out.println("");
+					out.println("Lista de usuarios a los que sigues: ");
+					Set<String> seguidos = getServidor().getSeguidos(u.getNick());
+
+					if (seguidos.size() == 0) {
+						out.println("No estás siguiendo a nadie.");
+					}
+					for (String s : seguidos) {
+						out.println(" - " + s);
+					}
+
+				} catch (RemoteException e) {
+					out.println("Error al obtener la lista de seguidos: ");
+					out.println(e.getMessage());
+					e.printStackTrace();
+				}
+
 				return true;
 			}
 		};
@@ -394,6 +565,39 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 			@Override
 			public String getMensajeError() {
 				return "Ese usuario ya está registrado.";
+			}
+		};
+	}
+
+	/**
+	 * Validador de parámetro de opción que verifica si un usuario no existe.
+	 * 
+	 * @return El validador generado
+	 */
+	private ParametroOpcionValidadorInterface getValidadorNickNoExiste() {
+		return new ParametroOpcionValidadorInterface() {
+			@Override
+			public boolean validar(Object dato) throws ParametroCallbackNoValido {
+				// Si no hay conexión no podemos validarlo
+				if (getServidor() == null) {
+					return true;
+				}
+
+				try {
+					if (!s.isRegistrado((String) dato)) {
+						return false;
+					}
+				}
+				// Si hay fallos los ignoramos. El proceso de registro los mostrará
+				catch (Exception e) {
+				}
+
+				return true;
+			}
+
+			@Override
+			public String getMensajeError() {
+				return "Ese usuario no está registrado.";
 			}
 		};
 	}
