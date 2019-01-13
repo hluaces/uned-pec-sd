@@ -1,5 +1,7 @@
 package es.uned.common.rmi;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -77,11 +79,43 @@ final public class ControladorRegistro {
 	}
 
 	/**
+	 * Devuelve un número de puerto local que no esté en uso entre un rango de
+	 * puertos dados (inclusive).
+	 * 
+	 * @param puertoInicial puerto inicial en el que se buscará uno aleatorio
+	 * @param puertoFinal   puerto final en el que se bucará uno aleatorio.
+	 * @return numero de puerto
+	 * @throws IOException Si no hay puertos disponibles
+	 */
+	private int getPuertoAleatorio(int puertoInicial, int puertoFinal) throws IOException {
+		for (int i = puertoInicial; i <= puertoFinal; i++) {
+			try {
+				int local;
+
+				ServerSocket s = new ServerSocket(0);
+				local = s.getLocalPort();
+				s.close();
+
+				return local;
+			} catch (IOException e) {
+				if (i >= puertoFinal) {
+					throw e;
+				}
+
+				continue;
+			}
+		}
+		return puertoFinal;
+
+	}
+
+	/**
 	 * Devuelve un número de puerto libre en el registro
 	 * 
-	 * @return int
+	 * @return int Número de puerto a usar
+	 * @throws IOException Si hay errores al intentar bindearse al puerto
 	 */
-	private int getPuerto(Remote r) {
+	private int getPuerto(Remote r) throws IOException {
 
 		String nombre = ControladorRegistro.getName(r);
 
@@ -93,7 +127,7 @@ final public class ControladorRegistro {
 			return 1113;
 		}
 
-		return 1114;
+		return this.getPuertoAleatorio(1114, 65535);
 	}
 
 	/**
@@ -109,10 +143,14 @@ final public class ControladorRegistro {
 	 * @throws RemoteException
 	 */
 	public Remote exportarObjeto(Remote r) throws RemoteException {
-		Remote ret = UnicastRemoteObject.exportObject(r, this.getPuerto(r));
-		this.registro.rebind(ControladorRegistro.getName(r), ret);
+		try {
+			Remote ret = UnicastRemoteObject.exportObject(r, this.getPuerto(r));
+			this.registro.rebind(ControladorRegistro.getName(r), ret);
 
-		return ret;
+			return ret;
+		} catch (IOException e) {
+			throw new RemoteException("No hay puertos libres para exportar el objeto.");
+		}
 	}
 
 	/**

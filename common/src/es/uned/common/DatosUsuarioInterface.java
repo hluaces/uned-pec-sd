@@ -1,5 +1,7 @@
 package es.uned.common;
 
+import es.uned.common.servicios.CallbackUsuarioInterface;
+
 /**
  * Interfaz que encapsula una abstracción del conjunto de datos asociados a un
  * usuario
@@ -50,4 +52,11 @@ public interface DatosUsuarioInterface {
 	 * @param nick Nuevo nick del usuario
 	 */
 	public void setNick(String nick);
+
+	/**
+	 * Devuelve el callback de usuario asociado a estos datos.
+	 * 
+	 * @return La instancia del callback.
+	 */
+	public CallbackUsuarioInterface getCallback();
 }

@@ -19,8 +19,10 @@ import es.uned.common.menus.OpcionMenuInterface;
 import es.uned.common.menus.ParametroOpcionInterface;
 import es.uned.common.menus.ParametroOpcionValidadorInterface;
 import es.uned.common.rmi.ControladorRegistro;
+import es.uned.common.servicios.CallbackUsuarioInterface;
 import es.uned.common.servicios.exception.AutenticacionExcepcion;
 import es.uned.common.servicios.exception.UsuarioNoExisteException;
+import es.uned.usuario.servicios.CallbackUsuarioImpl;
 
 /**
  * @author Héctor Luaces Novo <hector@luaces-novo.es>
@@ -54,13 +56,18 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 	private ControladorRegistro c;
 
 	/**
+	 * El callback usado para enviar información a este controlador.
+	 */
+	private CallbackUsuarioInterface callback;
+
+	/**
 	 * Crea un nuevo controlador de usuario.
 	 * 
 	 * @param out El stream que será utilizado para mostrar mensajes al usuario.
 	 * @param s   El objeto ServidorInterface utilizado para comunicarse remotamente
 	 *            con el sistema
 	 */
-	public Usuario(PrintStream out, ControladorRegistro c) {
+	public Usuario(PrintStream out, ControladorRegistro c) throws RemoteException {
 		super();
 
 		this.out = out;
@@ -68,6 +75,9 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 		this.c = c;
 
 		this.prepararMenu();
+
+		this.callback = new CallbackUsuarioImpl(out);
+		this.callback = (CallbackUsuarioInterface) c.exportarObjeto(this.callback);
 	}
 
 	/**
@@ -268,7 +278,7 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 						throw new RuntimeException("Imposible conectar con el servidor.");
 					}
 
-					sesion = s.autenticar(nick, pass);
+					sesion = s.autenticar(nick, pass, callback);
 					u = s.getDatosSesion(sesion);
 
 					out.println("¡Hola, " + u.getNombre() + "!");
@@ -278,6 +288,7 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 					out.println(e.getMessage());
 				} catch (RuntimeException e) {
 					out.println("No se pudo conectar con el servidor.");
+					out.println(e.getMessage());
 				}
 
 				return true;
@@ -316,7 +327,6 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 				} catch (Exception e) {
 					out.println("Ha ocurrido un error de comunicación: ");
 					out.println(e.getMessage());
-					e.printStackTrace();
 				}
 
 				return true;
@@ -483,7 +493,6 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 				} catch (RemoteException e) {
 					out.println("Error al obtener la lista de seguidores: ");
 					out.println(e.getMessage());
-					e.printStackTrace();
 				}
 
 				try {
@@ -501,7 +510,6 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 				} catch (RemoteException e) {
 					out.println("Error al obtener la lista de seguidos: ");
 					out.println(e.getMessage());
-					e.printStackTrace();
 				}
 
 				return true;

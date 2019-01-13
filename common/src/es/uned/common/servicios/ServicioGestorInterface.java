@@ -76,4 +76,34 @@ public interface ServicioGestorInterface extends ServicioInterface {
 	 * @throws RemoteException Si hay errores de comunicación
 	 */
 	public Set<String> getSeguidos(String nick) throws RemoteException;
+
+	/**
+	 * Registra el callback de un usuario de forma que éste esté disponible para
+	 * enviar mensajes al usuario en el caso de que fuese necesario.
+	 * 
+	 * @param usuario                  Nick del usuario para el que añadimos el
+	 *                                 callback
+	 * @param CallbackUsuarioInterface Instancia del callback a añadir
+	 * @throws RemoteException Si hay errores de comunicación
+	 */
+	public boolean addCallbackUsuario(String usuario, CallbackUsuarioInterface c) throws RemoteException;
+
+	/**
+	 * Elimina todos los callbacks de un usuario daod.
+	 * 
+	 * @param usuario Nick del usuario
+	 * @return boolean
+	 * @throws RemoteException si hay errores de comunicación
+	 */
+	public boolean removeCallbackUsuario(String usuario) throws RemoteException;
+
+	/**
+	 * Muestra al usuario (utilizando su callback) todos los mensajes que no ha
+	 * recibido al estar offline.
+	 * 
+	 * @param usuario Usuario al que se le mostrarán los mensajes
+	 * @return boolean
+	 * @throws RemoteException Si hay errores de comunicación
+	 */
+	public boolean mostrarMensajesOffline(String usuario) throws RemoteException;
 }

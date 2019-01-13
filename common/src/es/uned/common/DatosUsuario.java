@@ -2,6 +2,8 @@ package es.uned.common;
 
 import java.io.Serializable;
 
+import es.uned.common.servicios.CallbackUsuarioInterface;
+
 /**
  * Clase que representa a un usuario del sistema. No confundir con el
  * controlador "Usuario" que se encarga de administrar los servicios de usuario.
@@ -11,6 +13,7 @@ import java.io.Serializable;
 public final class DatosUsuario implements DatosUsuarioInterface, Serializable {
 	private static final long serialVersionUID = -1139206633143592204L;
 	private String nombre, nick, password;
+	private CallbackUsuarioInterface c;
 
 	/**
 	 * Crea un nuevo conjunto de datos de usuario
@@ -72,5 +75,13 @@ public final class DatosUsuario implements DatosUsuarioInterface, Serializable {
 	@Override
 	public void setNick(String nick) {
 		this.nick = nick;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public CallbackUsuarioInterface getCallback() {
+		return this.c;
 	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import es.uned.common.DatosUsuarioInterface;
+import es.uned.common.servicios.CallbackUsuarioInterface;
 import es.uned.common.servicios.exception.AutenticacionExcepcion;
 import es.uned.common.servicios.exception.UsuarioNoExisteException;
 
@@ -29,15 +30,17 @@ public interface ServidorInterface extends Remote {
 	 * 
 	 * Si tiene éxito devuelve el ID de sesión.
 	 * 
-	 * @param usuario  Usuario a identificar
-	 * @param password Su contraseña
+	 * @param usuario                  Usuario a identificar
+	 * @param password                 Su contraseña
+	 * @param CallbackUsuarioInterface El callback que se usará para notificar cosas
+	 *                                 al usuario
 	 * @return ID de sesión
 	 * @throws UsuarioNoExisteException Si el usuario no existe
 	 * @throws AutenticacionExcepcion   En fallos de contraseña o si el servicio de
 	 *                                  autenticación no funciona
 	 * @throws RemoteException
 	 */
-	public int autenticar(String usuario, String password)
+	public int autenticar(String usuario, String password, CallbackUsuarioInterface c)
 			throws UsuarioNoExisteException, AutenticacionExcepcion, RemoteException;
 
 	/**

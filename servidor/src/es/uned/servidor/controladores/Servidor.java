@@ -16,6 +16,7 @@ import es.uned.common.menus.CallbackOpcionInterface;
 import es.uned.common.menus.Menu;
 import es.uned.common.menus.ParametroOpcionInterface;
 import es.uned.common.rmi.ControladorRegistro;
+import es.uned.common.servicios.CallbackUsuarioInterface;
 import es.uned.common.servicios.EnumEstadoServicio;
 import es.uned.common.servicios.ServicioAutenticacionInterface;
 import es.uned.common.servicios.ServicioGestorInterface;
@@ -147,18 +148,12 @@ public class Servidor extends AbstractControlador implements ServidorInterface {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int autenticar(String usuario, String password)
-			throws UsuarioNoExisteException, AutenticacionExcepcion, RemoteException {
-
-		return this.getServicioAutenticacion().autenticar(usuario, password);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public boolean salir(int sesion) throws AutenticacionExcepcion, RemoteException {
-		return this.getServicioAutenticacion().salir(sesion);
+		String usuario = this.getServicioAutenticacion().getDatosSesion(sesion).getNick();
+		this.getServicioAutenticacion().salir(sesion);
+		this.getServicioGestor().removeCallbackUsuario(usuario);
+
+		return true;
 	}
 
 	/**
@@ -197,7 +192,7 @@ public class Servidor extends AbstractControlador implements ServidorInterface {
 			throw new AutenticacionExcepcion("Tu sesión no es válida.");
 		}
 
-		return this.getServicioGestor().enviarTrino(u.getNombre(), trino);
+		return this.getServicioGestor().enviarTrino(u.getNick(), trino);
 	}
 
 	/**
@@ -243,6 +238,21 @@ public class Servidor extends AbstractControlador implements ServidorInterface {
 	@Override
 	public Set<String> getSeguidos(String nick) throws RemoteException {
 		return this.getServicioGestor().getSeguidos(nick);
+	}
+
+	@Override
+	public int autenticar(String usuario, String password, CallbackUsuarioInterface c)
+			throws UsuarioNoExisteException, AutenticacionExcepcion, RemoteException {
+		int localSesion = this.getServicioAutenticacion().autenticar(usuario, password);
+
+		if (localSesion == 0) {
+			return localSesion;
+		}
+
+		this.getServicioGestor().addCallbackUsuario(usuario, c);
+		this.getServicioGestor().mostrarMensajesOffline(usuario);
+		return localSesion;
+
 	}
 
 }

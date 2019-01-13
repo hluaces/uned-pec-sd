@@ -18,6 +18,7 @@ public class UsuarioMain {
 			u.mostrarMenu();
 
 			con.limpiarObjeto(u);
+			System.exit(0);
 		} catch (Exception e) {
 			System.out.println(" [ERROR]");
 			System.out.println("Ha ocurrido un error, cancelando...");
