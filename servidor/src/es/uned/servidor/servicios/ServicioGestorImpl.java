@@ -82,9 +82,7 @@ public final class ServicioGestorImpl extends AbstractServicio implements Servic
 	 * @return Mensaje que representa al trino
 	 */
 	private String getTextoTrino(TrinoInterface t) {
-		Date fecha = new Date(Long.parseLong(t.ObtenerTimestamp() + "") * 1000);
-
-		return fecha + " " + t.ObtenerNickPropietario() + " trinea: " + t.ObtenerTrino();
+		return t.ObtenerNickPropietario() + "#" + t.ObtenerTrino();
 	}
 
 	/**
