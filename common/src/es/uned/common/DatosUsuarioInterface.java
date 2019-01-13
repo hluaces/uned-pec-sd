@@ -59,4 +59,11 @@ public interface DatosUsuarioInterface {
 	 * @return La instancia del callback.
 	 */
 	public CallbackUsuarioInterface getCallback();
+
+	/**
+	 * Permite establecer el callback del usuario
+	 * 
+	 * @param c El callback del usuario a asociar
+	 */
+	public void setCallback(CallbackUsuarioInterface c);
 }

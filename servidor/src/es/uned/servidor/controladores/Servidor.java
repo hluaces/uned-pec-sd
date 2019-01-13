@@ -249,7 +249,10 @@ public class Servidor extends AbstractControlador implements ServidorInterface {
 			return localSesion;
 		}
 
-		this.getServicioGestor().addCallbackUsuario(usuario, c);
+		DatosUsuarioInterface datosUsuario = this.getDatosSesion(localSesion);
+		datosUsuario.setCallback(c);
+
+		this.getServicioGestor().addCallbackUsuario(usuario, datosUsuario.getCallback());
 		this.getServicioGestor().mostrarMensajesOffline(usuario);
 		return localSesion;
 

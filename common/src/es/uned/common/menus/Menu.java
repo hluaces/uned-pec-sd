@@ -4,10 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-
-import es.uned.common.servicios.exception.ServicioYaIniciadoException;
 
 /**
  * Menús que mustran opciones con callbacks previamente definidos cuando éstas
@@ -131,43 +128,5 @@ public class Menu implements MenuInterface {
 		for (OpcionMenuInterface o : this.opciones) {
 			o.mostrar();
 		}
-	}
-
-	public static void main(String[] argc) {
-		MenuInterface s = new Menu(System.out);
-
-		try {
-			s.addOpcion("Imprime 'hola mundo'", new CallbackOpcionInterface() {
-				@Override
-				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-					out.println("HOLA MUNDO");
-					return true;
-				}
-			});
-			s.addOpcion("Imprime 'asd'", new CallbackOpcionInterface() {
-
-				@Override
-				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-					out.println("asd");
-					return true;
-				}
-			});
-			s.addOpcion("Salir", new CallbackOpcionInterface() {
-
-				@Override
-				public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-					out.println("Adios!!!");
-					return true;
-				}
-
-			}).setFinal(true);
-
-			s.mostrar();
-		} catch (ServicioYaIniciadoException e) {
-			e.printStackTrace();
-		} finally {
-			System.out.println("Fin de programa");
-		}
-
 	}
 }

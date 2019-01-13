@@ -84,4 +84,12 @@ public final class DatosUsuario implements DatosUsuarioInterface, Serializable {
 	public CallbackUsuarioInterface getCallback() {
 		return this.c;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setCallback(CallbackUsuarioInterface c) {
+		this.c = c;
+	}
 }

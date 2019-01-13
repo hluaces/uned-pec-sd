@@ -8,7 +8,7 @@ import es.uned.common.servicios.exception.ServicioYaIniciadoException;
  * 
  * @author Héctor Luaces Novo <hector@luaces-novo.es>
  */
-interface MenuInterface {
+public interface MenuInterface {
 	/**
 	 * Añade una opción al menú. El propio servicio se encargará intermante de
 	 * configurarla acorde a las necesidades pasadas.

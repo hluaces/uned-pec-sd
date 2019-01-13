@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import es.uned.common.menus.Menu;
+import es.uned.common.menus.MenuInterface;
 import es.uned.common.servicios.ServicioInterface;
 import es.uned.common.servicios.exception.ServicioYaIniciadoException;
 
@@ -26,7 +26,7 @@ public abstract class AbstractControlador implements ControladorInterface {
 	 * El menú asociado a este controlador y que permitirá al usuario interactuar
 	 * con él.
 	 */
-	protected Menu menu;
+	protected MenuInterface menu;
 
 	/**
 	 * El stream de salida que se usará si el controlador necesita avisar de algo al
@@ -77,7 +77,7 @@ public abstract class AbstractControlador implements ControladorInterface {
 	 * @param s Servicio del menú a añadir
 	 * @return boolean
 	 */
-	protected boolean addMenu(Menu s) {
+	protected boolean addMenu(MenuInterface s) {
 		this.menu = s;
 		return true;
 	}
