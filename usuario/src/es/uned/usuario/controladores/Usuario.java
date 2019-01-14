@@ -21,6 +21,7 @@ import es.uned.common.menus.ParametroOpcionValidadorInterface;
 import es.uned.common.rmi.ControladorRegistro;
 import es.uned.common.servicios.CallbackUsuarioInterface;
 import es.uned.common.servicios.exception.AutenticacionExcepcion;
+import es.uned.common.servicios.exception.ServicioYaIniciadoException;
 import es.uned.common.servicios.exception.UsuarioNoExisteException;
 import es.uned.usuario.servicios.CallbackUsuarioImpl;
 
@@ -153,28 +154,33 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 	private void prepararMenuLogeado() {
 		this.menu.reset();
 
-		this.menu.addOpcion("Información del usuario.", this.opcionInformacion());
-		OpcionMenuInterface o = this.menu.addOpcion("Enviar trino.", this.opcionAddTrino());
-		o.addParametro("trino", "Introduce el mensaje de tu trino: ",
-				this.getValidadorString(".+", "El trino no puede estar vacío"));
+		try {
+			this.menu.addOpcion("Información del usuario.", this.opcionInformacion());
 
-		this.menu.addOpcion("Listar usuarios del sistema.", this.opcionListarUsuarios());
+			OpcionMenuInterface o = this.menu.addOpcion("Enviar trino.", this.opcionAddTrino());
+			o.addParametro("trino", "Introduce el mensaje de tu trino: ",
+					this.getValidadorString(".+", "El trino no puede estar vacío"));
 
-		o = this.menu.addOpcion("Seguir a.", this.opcionSeguir());
-		o.addParametro("nick", "¿A quién quieres seguir?: ", this.getValidadorNickNoExiste());
+			this.menu.addOpcion("Listar usuarios del sistema.", this.opcionListarUsuarios());
 
-		o = this.menu.addOpcion("Dejar de seguir a.", this.opcionNoseguir());
-		o.addParametro("nick", "¿A quién quieres dejar de seguir?: ", this.getValidadorNickNoExiste());
+			o = this.menu.addOpcion("Seguir a.", this.opcionSeguir());
+			o.addParametro("nick", "¿A quién quieres seguir?: ", this.getValidadorNickNoExiste());
 
-		this.menu.addOpcion("Borrar trino a los usuarios que todavía no lo han recibido.",
-				new CallbackOpcionInterface() {
+			o = this.menu.addOpcion("Dejar de seguir a.", this.opcionNoseguir());
+			o.addParametro("nick", "¿A quién quieres dejar de seguir?: ", this.getValidadorNickNoExiste());
 
-					@Override
-					public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
-						throw new RuntimeException("Aun no implementado");
-					}
-				});
-		this.menu.addOpcion("Salir 'Logout'.", this.opcionLogout());
+			this.menu.addOpcion("Borrar trino a los usuarios que todavía no lo han recibido.",
+					new CallbackOpcionInterface() {
+
+						@Override
+						public boolean ejecutar(Map<String, ParametroOpcionInterface> parametros, PrintStream out) {
+							throw new RuntimeException("Aun no implementado");
+						}
+					});
+			this.menu.addOpcion("Salir 'Logout'.", this.opcionLogout());
+		} catch (ServicioYaIniciadoException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -184,23 +190,29 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 		this.menu.reset();
 
 		// 1- Registro de usuario
-		OpcionMenuInterface o = this.menu.addOpcion("Registrar un nuevo usuario.", this.opcionRegistrarse());
-		o.addParametro("nick", "¿Con qué nick quieres ser conocido?: ",
-				this.getValidadorString(".+", "Tienes que introducir un nick."))
-				.addValidador(this.getValidadorNickExiste());
-		o.addParametro("nombre", "Nombre real: ", this.getValidadorString(".+", "Tienes que introducir un nombre"));
-		o.addParametro("contraseña", "Contraseña: ",
-				this.getValidadorString(".+", "Tienes que introducir una contraseña."));
-		o.addParametro("contraseña2", "Verifica tu contraseña: ", this.getValidadorVerificarPassword(o));
+		OpcionMenuInterface o;
+		try {
+			o = this.menu.addOpcion("Registrar un nuevo usuario.", this.opcionRegistrarse());
 
-		// 2- Login
-		OpcionMenuInterface o2 = this.menu.addOpcion("Hacer login.", this.opcionLogin());
-		o2.addParametro("nick", "Usuario: ", this.getValidadorString(".+", "Tienes que introducir un nick."));
-		o2.addParametro("contraseña", "Contraseña: ",
-				this.getValidadorString(".+", "Tienes que introducir una contraseña."));
+			o.addParametro("nick", "¿Con qué nick quieres ser conocido?: ",
+					this.getValidadorString(".+", "Tienes que introducir un nick."))
+					.addValidador(this.getValidadorNickExiste());
+			o.addParametro("nombre", "Nombre real: ", this.getValidadorString(".+", "Tienes que introducir un nombre"));
+			o.addParametro("contraseña", "Contraseña: ",
+					this.getValidadorString(".+", "Tienes que introducir una contraseña."));
+			o.addParametro("contraseña2", "Verifica tu contraseña: ", this.getValidadorVerificarPassword(o));
 
-		// 3- Salir
-		this.menu.addOpcion("Salir", this.opcionQuit()).setFinal(true);
+			// 2- Login
+			OpcionMenuInterface o2 = this.menu.addOpcion("Hacer login.", this.opcionLogin());
+			o2.addParametro("nick", "Usuario: ", this.getValidadorString(".+", "Tienes que introducir un nick."));
+			o2.addParametro("contraseña", "Contraseña: ",
+					this.getValidadorString(".+", "Tienes que introducir una contraseña."));
+
+			// 3- Salir
+			this.menu.addOpcion("Salir", this.opcionQuit()).setFinal(true);
+		} catch (ServicioYaIniciadoException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**********************************************************************************************************************
@@ -476,7 +488,6 @@ final public class Usuario extends AbstractControlador implements UsuarioInterfa
 				out.println("- Nombre: " + u.getNombre());
 				out.println("- Nick: " + u.getNick());
 				out.println("- Sesión: " + sesion);
-				out.println("- URL RMI: Ninguna. El usuario no expone servicios ajenos.");
 
 				try {
 					out.println("");
